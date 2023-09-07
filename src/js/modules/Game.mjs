@@ -7,11 +7,14 @@ export default class Game {
     this.canvasWidth = canvas.width;
     this.canvasHeight = canvas.height;
     this.cards = cards;
+    this.cursorX = null;
+    this.cursorY = null;
     this.reverseCards = new Image();
     this.reverseCards.src = 'assets/background.jfif';
     this.loadBackgroundImage = new Promise((resolve) => {
       this.reverseCards.onload = () => resolve();
     });
+    this.canvas.addEventListener('click', this.handleCardClick.bind(this));
   }
 
   static generarColorAleatorio () {
@@ -21,6 +24,18 @@ export default class Game {
     const a = Math.random();
     return `rgba(${r}, ${g}, ${b}, ${a})`;
   };
+
+  checkCardClick () {
+    for (const card of this.cards) {
+      card.detectedClickCard(this.cursorX, this.cursorY);
+    }
+  }
+
+  handleCardClick (e) {
+    this.cursorX = e.offsetX;
+    this.cursorY = e.offsetY;
+    this.checkCardClick();
+  }
 
   givePositionsCards () {
     // const numRows = 5;

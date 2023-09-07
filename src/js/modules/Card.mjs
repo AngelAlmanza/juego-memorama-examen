@@ -12,4 +12,16 @@ export default class Card {
   drawCard (ctx) {
     ctx.fillRect(this.x, this.y, this.w, this.h);
   }
+
+  detectedClickCard (cursorX, cursorY) {
+    if (
+      cursorX >= this.x &&
+      cursorX <= this.x + this.w &&
+      cursorY >= this.y &&
+      cursorY <= this.y + this.h
+    ) {
+      this.state = 'visible';
+      return this.id;
+    }
+  }
 }
