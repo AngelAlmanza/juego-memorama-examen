@@ -1,4 +1,4 @@
-import { CARDS } from "../data/CardSets.mjs";
+import { CARDS, PAIRS } from "../data/CardSets.mjs";
 import Card from "./modules/Card.mjs";
 import Game from "./modules/Game.mjs";
 

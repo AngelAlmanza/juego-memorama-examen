@@ -1,5 +1,6 @@
 export default class Card {
-  constructor (x, y, w, h, imagen, state) {
+  constructor (id, x, y, w, h, imagen, state) {
+    this.id = id;
     this.x = x;
     this.y = y;
     this.w = w;
