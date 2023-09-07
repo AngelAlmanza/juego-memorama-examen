@@ -1,3 +1,5 @@
+import Game from "./Game.mjs";
+
 export default class Card {
   constructor (id, x, y, w, h, imagen, state) {
     this.id = id;
@@ -7,10 +9,21 @@ export default class Card {
     this.h = h;
     this.imagen = imagen;
     this.state = state;
+    this.reverseCards = new Image();
+    this.reverseCards.src = 'assets/background.jfif';
+    this.loadBackgroundImage = new Promise((resolve) => {
+      this.reverseCards.onload = () => resolve();
+    });
   }
 
-  drawCard (ctx) {
-    ctx.fillRect(this.x, this.y, this.w, this.h);
+  async drawCard (ctx) {
+    await this.loadBackgroundImage;
+    if (this.state == 'HIDDEN') {
+      ctx.drawImage(this.reverseCards, this.x, this.y, this.w, this.h);
+    } else {
+      ctx.fillStyle = Game.generarColorAleatorio();
+      ctx.fillRect(this.x, this.y, this.w, this.h);
+    }
   }
 
   detectedClickCard (cursorX, cursorY) {
@@ -20,8 +33,12 @@ export default class Card {
       cursorY >= this.y &&
       cursorY <= this.y + this.h
     ) {
-      this.state = 'visible';
-      return this.id;
+      return true;
     }
+  }
+
+  flipCard (ctx) {
+    ctx.clearRect(this.x, this.y, this.w, this.h);
+    this.drawCard(ctx);
   }
 }

@@ -9,12 +9,8 @@ export default class Game {
     this.cards = cards;
     this.cursorX = null;
     this.cursorY = null;
-    this.reverseCards = new Image();
-    this.reverseCards.src = 'assets/background.jfif';
-    this.loadBackgroundImage = new Promise((resolve) => {
-      this.reverseCards.onload = () => resolve();
-    });
     this.canvas.addEventListener('click', this.handleCardClick.bind(this));
+    this.startNewGame = true;
   }
 
   static generarColorAleatorio () {
@@ -27,7 +23,11 @@ export default class Game {
 
   checkCardClick () {
     for (const card of this.cards) {
-      card.detectedClickCard(this.cursorX, this.cursorY);
+      if (card.detectedClickCard(this.cursorX, this.cursorY)) {
+        card.state = (card.state == 'HIDDEN') ? 'VISIBLE' : 'HIDDEN';
+        card.flipCard(this.ctx);
+        return;
+      }
     }
   }
 
@@ -62,17 +62,24 @@ export default class Game {
     }
   }
 
-  async drawCards () {
-    await this.loadBackgroundImage;
+  drawCardsNewGame () {
     this.cards.forEach((card, index) => {
-      if (card.state == 'visible') {
-        this.ctx.fillStyle = Game.generarColorAleatorio();
+      setTimeout(() => {
         card.drawCard(this.ctx);
-      } else {
-        setTimeout(() => {
-          this.ctx.drawImage(this.reverseCards, card.x, card.y, CARD_WIDTH, CARD_HEIGHT);
-        }, 100 * index);
-      }
+      }, 100 * index);
     });
+  }
+
+  repaint () {
+    if (this.startNewGame) {
+      this.givePositionsCards();
+      this.drawCardsNewGame();
+      this.startNewGame = false;
+    }
+  }
+
+  update () {
+    this.repaint();
+    window.requestAnimationFrame(this.update.bind(this));
   }
 }
