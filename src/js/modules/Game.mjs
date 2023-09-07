@@ -49,12 +49,14 @@ export default class Game {
 
   async drawCards () {
     await this.loadBackgroundImage;
-    this.cards.forEach(card => {
+    this.cards.forEach((card, index) => {
       if (card.state == 'visible') {
         this.ctx.fillStyle = Game.generarColorAleatorio();
         card.drawCard(this.ctx);
       } else {
-        this.ctx.drawImage(this.reverseCards, card.x, card.y, CARD_WIDTH, CARD_HEIGHT);
+        setTimeout(() => {
+          this.ctx.drawImage(this.reverseCards, card.x, card.y, CARD_WIDTH, CARD_HEIGHT);
+        }, 100 * index);
       }
     });
   }
