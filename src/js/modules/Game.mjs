@@ -1,4 +1,5 @@
 import { CARD_HEIGHT, CARD_WIDTH } from "../../data/CardSets.mjs";
+import Pair from "./Pair.mjs";
 
 export default class Game {
   constructor (canvas, cards) {
@@ -11,6 +12,7 @@ export default class Game {
     this.cursorY = null;
     this.canvas.addEventListener('click', this.handleCardClick.bind(this));
     this.startNewGame = true;
+    this.visibleCards = [];
   }
 
   static generarColorAleatorio () {
@@ -26,6 +28,7 @@ export default class Game {
       if (card.detectedClickCard(this.cursorX, this.cursorY)) {
         card.state = (card.state == 'HIDDEN') ? 'VISIBLE' : 'HIDDEN';
         card.flipCard(this.ctx);
+        this.handleTwoVisibleCards(card);
         return;
       }
     }
@@ -62,6 +65,31 @@ export default class Game {
     }
   }
 
+  handleTwoVisibleCards (card) {
+    this.cleantTwoVisibleCards();
+    if (card.state === 'HIDDEN') return
+    this.visibleCards.push(card);
+    if (this.visibleCards.length === 3) {
+      this.comparePair(new Pair(Symbol(), this.visibleCards[0], this.visibleCards[1], false));
+      this.setHiddenCardsInVisibleCards();
+    }
+    console.log(this.visibleCards)
+  }
+
+  cleantTwoVisibleCards () {
+    this.visibleCards = this.visibleCards.filter(c => c.state === 'VISIBLE');
+  }
+
+  setHiddenCardsInVisibleCards () {
+    this.visibleCards[0].state = 'HIDDEN';
+    this.visibleCards[1].state = 'HIDDEN';
+    this.visibleCards = [this.visibleCards[2]];
+  }
+
+  comparePair (pair) {
+    console.log(pair);
+  }
+
   drawCardsNewGame () {
     this.cards.forEach((card, index) => {
       setTimeout(() => {
@@ -70,11 +98,22 @@ export default class Game {
     });
   }
 
+  drawHiddenCards () {
+    for (const card of this.cards) {
+      if (card.state == 'HIDDEN') {
+        card.drawCard(this.ctx);
+      }
+    }
+  }
+
   repaint () {
     if (this.startNewGame) {
       this.givePositionsCards();
       this.drawCardsNewGame();
       this.startNewGame = false;
+    }
+    if (!this.startNewGame) {
+      this.drawHiddenCards();
     }
   }
 
