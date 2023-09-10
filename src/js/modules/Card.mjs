@@ -18,9 +18,10 @@ export default class Card {
 
   async drawCard (ctx) {
     await this.loadBackgroundImage;
-    if (this.state == 'HIDDEN') {
+    if (this.state === 'HIDDEN') {
       ctx.drawImage(this.reverseCards, this.x, this.y, this.w, this.h);
-    } else {
+    }
+    if (this.state === 'VISIBLE') {
       ctx.fillStyle = Game.generarColorAleatorio();
       ctx.fillRect(this.x, this.y, this.w, this.h);
     }

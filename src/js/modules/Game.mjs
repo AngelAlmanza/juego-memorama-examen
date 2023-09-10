@@ -1,4 +1,4 @@
-import { CARD_HEIGHT, CARD_WIDTH } from "../../data/CardSets.mjs";
+import { CARD_HEIGHT, CARD_WIDTH, PAIRS } from "../../data/CardSets.mjs";
 import Pair from "./Pair.mjs";
 
 export default class Game {
@@ -26,7 +26,8 @@ export default class Game {
   checkCardClick () {
     for (const card of this.cards) {
       if (card.detectedClickCard(this.cursorX, this.cursorY)) {
-        card.state = (card.state == 'HIDDEN') ? 'VISIBLE' : 'HIDDEN';
+        if (card.state === 'DISCOVERED') return
+        card.state = (card.state === 'HIDDEN') ? 'VISIBLE' : 'HIDDEN';
         card.flipCard(this.ctx);
         this.handleTwoVisibleCards(card);
         return;
@@ -69,11 +70,14 @@ export default class Game {
     this.cleantTwoVisibleCards();
     if (card.state === 'HIDDEN') return
     this.visibleCards.push(card);
-    if (this.visibleCards.length === 3) {
-      this.comparePair(new Pair(Symbol(), this.visibleCards[0], this.visibleCards[1], false));
+    if (this.visibleCards.length < 3) {
+      return;
+    }
+    const pairToCompare = new Pair(Symbol(), this.visibleCards[0], this.visibleCards[1], false);
+    const check = this.checkForMatchingPair(pairToCompare);
+    if (!check) {
       this.setHiddenCardsInVisibleCards();
     }
-    console.log(this.visibleCards)
   }
 
   cleantTwoVisibleCards () {
@@ -86,8 +90,24 @@ export default class Game {
     this.visibleCards = [this.visibleCards[2]];
   }
 
-  comparePair (pair) {
-    console.log(pair);
+  checkForMatchingPair (pairToCompare) {
+    const matchingPair = PAIRS.find(pair => {
+      return (
+        (pair.card1 === pairToCompare.card1 && pair.card2 === pairToCompare.card2) ||
+        (pair.card1 === pairToCompare.card2 && pair.card2 === pairToCompare.card1)
+      );
+    });
+    if (!matchingPair) {
+      return false;
+    }
+    matchingPair.discovered = true;
+    this.disableCards(matchingPair);
+    return true;
+  }
+
+  disableCards (pair) {
+    pair.card1.state = 'DISCOVERED';
+    pair.card2.state = 'DISCOVERED';
   }
 
   drawCardsNewGame () {
@@ -100,7 +120,7 @@ export default class Game {
 
   drawHiddenCards () {
     for (const card of this.cards) {
-      if (card.state == 'HIDDEN') {
+      if (card.state === 'HIDDEN') {
         card.drawCard(this.ctx);
       }
     }
@@ -108,6 +128,7 @@ export default class Game {
 
   repaint () {
     if (this.startNewGame) {
+      this.shuffleCards();
       this.givePositionsCards();
       this.drawCardsNewGame();
       this.startNewGame = false;
