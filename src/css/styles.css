@@ -7,8 +7,6 @@
 body {
   display: flex;
   justify-content: center;
-}
-
-canvas {
-  border: 1px solid black;
+  background-repeat: repeat;
+  background-position: center;
 }
