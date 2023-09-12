@@ -5,14 +5,52 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Juego de Memorama</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Macondo&family=Roboto:wght@400;700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./src/css/styles.css">
 </head>
 <body>
   <canvas id="canvas" width="1080" height="720"></canvas>
   <section class="game-info-container">
     <span id="clock" class="game__time">Tiempo:</span>
+    <div class="game__settings">
+      <h2>¿Listo para comenzar?</h2>
+      <p>Selecciona la dificultad</p>
+      <form>
+        <div class="settings__input--container">
+          <input type="radio" name="difficulty" id="viking" value="viking">
+          <label for="viking">Vikingo</label>
+        </div>
+        <div class="settings__input--container">
+          <input type="radio" name="difficulty" id="berserk" value="berserker">
+          <label for="berserk">Berserker</label>
+        </div>
+      </form>
+      <button class="game__button--start" id="start">Comenzar</button>
+    </div>
+    <div class="game__rules">
+      <h2>Como jugar</h2>
+      <p>
+        Selecciona cartas un par de cartas para descubrirlas y encontrar todos los pares
+        recuerda que dependiendo de la dificultad el tiempo que tienes para lograr encontrar todos los pares
+        puede variar, así como la frecuencia en la que se vuelven a mezclar las cartas.
+      </p>
+      <details class="rules__section">
+        <summary class="rules__section--title">Dificultad Vikingo</summary>
+        <ul class="rules__section--container">
+          <li class="rules__item">Tendras 3 minutos para encontrar todos los pares</li>
+          <li class="rules__item">Cada 20 movimientos las cartas serán mezcladas</li>
+        </ul>
+      </details>
+      <details class="rules__section">
+        <summary class="rules__section--title">Dificultad Berserker</summary>
+        <ul class="rules__section--container">
+          <li class="rules__item">Tendras 2 minutos para encontrar las cartas</li>
+          <li class="rules__item">Cada 10 movimientos las cartas serán mezcladas</li>
+        </ul>
+      </details>
+    </div>
   </section>
   <script type="module" src="./src/js/main.js"></script>
 </body>

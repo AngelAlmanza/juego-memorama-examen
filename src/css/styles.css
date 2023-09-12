@@ -7,6 +7,7 @@
 html {
   font-family: 'Roboto', sans-serif;
   font-size: 62.5%;
+  color: white;
 }
 
 body {
@@ -23,5 +24,105 @@ body {
 .game__time {
   font-size: 2.4rem;
   font-weight: bold;
-  color: white;
+}
+
+.game__settings {
+  width: 80%;
+  margin: 32px auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.game__settings h2,
+.game__settings p {
+  font-family: 'Macondo', cursive;
+  font-size: 2.8rem;
+  margin: 1.2rem 0;
+}
+
+.game__settings p {
+  font-size: 2.4rem;
+}
+
+.game__settings form {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+}
+
+.settings__input--container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 50%;
+  margin: 0 10px;
+}
+
+.settings__input--container:nth-child(1) {
+  flex-flow: row-reverse;
+}
+
+.settings__input--container label:hover {
+  cursor: pointer;
+}
+
+.settings__input--container label {
+  font-family: 'Macondo', cursive;
+  font-size: 2.4rem;
+}
+
+.settings__input--container input {
+  opacity: 0;
+}
+
+.settings__input--container input[id="berserk"]:checked + label,
+.settings__input--container input[id="viking"]:checked + label {
+  color: #7F002D;
+}
+
+.game__button--start {
+  margin-top: 20px;
+  padding: 16px 20px;
+  border: none;
+  border-radius: 8px;
+  font-family: 'Macondo', cursive;
+  font-size: 2rem;
+  background-color: #7F002D;
+}
+
+.game__button--start:hover {
+  cursor: pointer;
+}
+
+.game__rules {
+  width: 100%;
+  padding-left: 2.4rem;
+}
+
+.game__rules h2 {
+  font-size: 2.4rem;
+}
+
+.game__rules p {
+  font-size: 1.2rem;
+}
+
+.rules__section {
+  margin: 20px 0;
+}
+
+.rules__section--title {
+  font-size: 2rem;
+}
+
+.rules__section--container {
+  margin-left: 2.4rem;
+  padding-right: 1rem;
+}
+
+.rules__item {
+  font-size: 1.6rem;
 }
