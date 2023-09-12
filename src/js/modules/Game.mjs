@@ -12,15 +12,16 @@ export default class Game {
     this.cursorY = null;
     this.startNewGame = true;
     this.visibleCards = [];
+    this.foundPairs = [];
     this.clock = clock;
-    this.handleCardClickReference = this.handleCardClick.bind(this)
+    this.handleCardClickReference = this.handleCardClick.bind(this);
     this.canvas.addEventListener('click', this.handleCardClickReference);
   }
 
   checkCardClick () {
     for (const card of this.cards) {
       if (card.detectedClickCard(this.cursorX, this.cursorY)) {
-        if (card.state === 'DISCOVERED') return
+        if (card.state === 'DISCOVERED') return;
         card.state = (card.state === 'HIDDEN') ? 'VISIBLE' : 'HIDDEN';
         card.flipCard(this.ctx);
         this.handleTwoVisibleCards(card);
@@ -51,22 +52,20 @@ export default class Game {
     }
   }
 
-  shuffleCards () {
+  shuffleCards() {
     for (let i = this.cards.length - 1; i > 0; i--) {
-      let indiceAleatorio = Math.floor(Math.random() * (i + 1));
-      let elementoActual = this.cards[i];
-      this.cards[i] = this.cards[indiceAleatorio];
-      this.cards[indiceAleatorio] = elementoActual;
+      let randomIndex = Math.floor(Math.random() * (i + 1));
+      let currentElement = this.cards[i];
+      this.cards[i] = this.cards[randomIndex];
+      this.cards[randomIndex] = currentElement;
     }
   }
 
   handleTwoVisibleCards (card) {
     this.cleantTwoVisibleCards();
-    if (card.state === 'HIDDEN') return
+    if (card.state === 'HIDDEN') return;
     this.visibleCards.push(card);
-    if (this.visibleCards.length < 3) {
-      return;
-    }
+    if (this.visibleCards.length < 3) return;
     const pairToCompare = new Pair(Symbol(), this.visibleCards[0], this.visibleCards[1], false);
     const check = this.checkForMatchingPair(pairToCompare);
     if (!check) {
@@ -102,6 +101,7 @@ export default class Game {
   disableCards (pair) {
     pair.card1.state = 'DISCOVERED';
     pair.card2.state = 'DISCOVERED';
+    this.foundPairs.push(pair);
   }
 
   drawCardsNewGame () {
@@ -124,6 +124,16 @@ export default class Game {
     this.canvas.removeEventListener('click', this.handleCardClickReference);
   }
 
+  checkLastPair () {
+    if (this.foundPairs.length <= 13) return;
+    const cardsNotDiscovered = this.cards.filter(c => c.state === 'VISIBLE');
+    if (cardsNotDiscovered.length < 2) return;
+    cardsNotDiscovered[0].state = 'DISCOVERED';
+    cardsNotDiscovered[1].state = 'DISCOVERED';
+    const lastPair = new Pair(Symbol(), cardsNotDiscovered[0], cardsNotDiscovered[0], true)
+    this.foundPairs.push(lastPair);
+  }
+
   repaint () {
     if (this.startNewGame) {
       this.shuffleCards();
@@ -139,8 +149,10 @@ export default class Game {
 
   update () {
     this.repaint();
-    if (this.clock.time <= 0) {
+    this.checkLastPair();
+    if (this.clock.time <= 0 || this.foundPairs.length === 15) {
       this.removeHandleCardClick();
+      console.log('The game has ended');
     }
     window.requestAnimationFrame(this.update.bind(this));
   }

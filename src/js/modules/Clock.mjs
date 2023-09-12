@@ -5,7 +5,7 @@ export default class Clock {
   }
 
   static minutesToMiliseconds (minutes) {
-    return minutes * 60000
+    return minutes * 60000;
   }
 
   showTime () {
