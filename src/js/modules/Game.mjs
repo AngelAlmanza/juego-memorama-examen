@@ -2,7 +2,7 @@ import { CARD_HEIGHT, CARD_WIDTH, PAIRS } from "../../data/CardSets.mjs";
 import Pair from "./Pair.mjs";
 
 export default class Game {
-  constructor (canvas, cards) {
+  constructor (canvas, cards, clock) {
     this.canvas = canvas;
     this.ctx = canvas.getContext('2d');
     this.canvasWidth = canvas.width;
@@ -10,9 +10,11 @@ export default class Game {
     this.cards = cards;
     this.cursorX = null;
     this.cursorY = null;
-    this.canvas.addEventListener('click', this.handleCardClick.bind(this));
     this.startNewGame = true;
     this.visibleCards = [];
+    this.clock = clock;
+    this.handleCardClickReference = this.handleCardClick.bind(this)
+    this.canvas.addEventListener('click', this.handleCardClickReference);
   }
 
   checkCardClick () {
@@ -118,12 +120,17 @@ export default class Game {
     }
   }
 
+  removeHandleCardClick () {
+    this.canvas.removeEventListener('click', this.handleCardClickReference);
+  }
+
   repaint () {
     if (this.startNewGame) {
       this.shuffleCards();
       this.givePositionsCards();
       this.drawCardsNewGame();
       this.startNewGame = false;
+      this.clock.showTime();
     }
     if (!this.startNewGame) {
       this.drawHiddenCards();
@@ -132,6 +139,9 @@ export default class Game {
 
   update () {
     this.repaint();
+    if (this.clock.time <= 0) {
+      this.removeHandleCardClick();
+    }
     window.requestAnimationFrame(this.update.bind(this));
   }
 }
