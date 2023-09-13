@@ -126,3 +126,7 @@ body {
 .rules__item {
   font-size: 1.6rem;
 }
+
+.inactive {
+  display: none;
+}

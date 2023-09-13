@@ -11,6 +11,7 @@ export default class Card {
       this.imagen.onload = () => resolve();
     });
     this.state = state;
+    this.flipSound = document.getElementById('flipSound');
     this.reverseCards = new Image();
     this.reverseCards.src = 'assets/background.jfif';
     this.loadBackgroundImage = new Promise((resolve) => {
@@ -41,6 +42,7 @@ export default class Card {
   }
 
   flipCard (ctx) {
+    this.flipSound.play();
     ctx.clearRect(this.x, this.y, this.w, this.h);
     this.drawCard(ctx);
   }

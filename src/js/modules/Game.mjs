@@ -2,7 +2,7 @@ import { CARD_HEIGHT, CARD_WIDTH, PAIRS } from "../../data/CardSets.mjs";
 import Pair from "./Pair.mjs";
 
 export default class Game {
-  constructor (canvas, cards, clock, music) {
+  constructor (canvas, cards, clock, movementsToShuffle) {
     this.canvas = canvas;
     this.ctx = canvas.getContext('2d');
     this.canvasWidth = canvas.width;
@@ -14,7 +14,10 @@ export default class Game {
     this.visibleCards = [];
     this.foundPairs = [];
     this.clock = clock;
+    this.movementsToShuffle = movementsToShuffle;
+    this.movements = 0;
     this.music = document.getElementById('music');
+    this.shuffleSound = document.getElementById('shuffleSound');
     this.handleCardClickReference = this.handleCardClick.bind(this);
     this.canvas.addEventListener('click', this.handleCardClickReference);
   }
@@ -25,6 +28,7 @@ export default class Game {
         if (card.state === 'DISCOVERED') return;
         card.state = (card.state === 'HIDDEN') ? 'VISIBLE' : 'HIDDEN';
         card.flipCard(this.ctx);
+        // this.movementsCounter();
         this.handleTwoVisibleCards(card);
         return;
       }
@@ -53,7 +57,18 @@ export default class Game {
     }
   }
 
+  // movementsCounter () {
+  //   this.movements++;
+  //   console.log(this.movements);
+  //   if (this.movements > this.movementsToShuffle) {
+  //     this.shuffleCards();
+  //     this.givePositionsCards();
+  //     this.movements = 0;
+  //   }
+  // }
+
   shuffleCards() {
+    this.shuffleSound.play();
     for (let i = this.cards.length - 1; i > 0; i--) {
       let randomIndex = Math.floor(Math.random() * (i + 1));
       let currentElement = this.cards[i];
@@ -121,6 +136,14 @@ export default class Game {
     }
   }
 
+  // drawDiscoveredCards () {
+  //   for (const card of this.cards) {
+  //     if (card.state === 'DISCOVERED') {
+  //       card.drawCard(this.ctx);
+  //     }
+  //   }
+  // }
+
   removeHandleCardClick () {
     this.canvas.removeEventListener('click', this.handleCardClickReference);
   }
@@ -145,6 +168,7 @@ export default class Game {
       this.music.play();
     }
     if (!this.startNewGame) {
+      // this.drawDiscoveredCards();
       this.drawHiddenCards();
     }
   }
@@ -155,6 +179,7 @@ export default class Game {
     if (this.clock.time <= 0 || this.foundPairs.length === 15) {
       this.removeHandleCardClick();
       this.music.pause();
+      this.clock.pause = true;
       console.log('The game has ended');
     }
     window.requestAnimationFrame(this.update.bind(this));

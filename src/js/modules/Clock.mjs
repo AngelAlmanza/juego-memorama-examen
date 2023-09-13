@@ -2,6 +2,7 @@ export default class Clock {
   constructor (time, container) {
     this.time = time;
     this.container = container;
+    this.pause = false;
   }
 
   static minutesToMiliseconds (minutes) {
@@ -12,6 +13,9 @@ export default class Clock {
     this.intervalId = setInterval(() => {
       if (this.time <= 0) {
         clearInterval(this.intervalId);
+        return;
+      }
+      if (this.pause) {
         return;
       }
       this.time -= 1000;
