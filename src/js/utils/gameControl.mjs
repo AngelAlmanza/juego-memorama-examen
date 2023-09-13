@@ -18,7 +18,7 @@ const createNewGame = (difficulty) => {
   const canvas = document.getElementById('canvas');
   const clock = document.querySelector('#clock');
   const gameClock = new Clock(Clock.minutesToMiliseconds(minutes), clock);
-  const gameLoop = new Game(canvas, CARDS, gameClock, movements);
+  const gameLoop = new Game(canvas, CARDS, gameClock, movements, difficulty);
   gameLoop.update();
   return gameLoop;
 }

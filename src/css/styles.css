@@ -1,3 +1,7 @@
+:root {
+  --primary-color: #7F002D;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -80,7 +84,7 @@ body {
 
 .settings__input--container input[id="berserk"]:checked + label,
 .settings__input--container input[id="viking"]:checked + label {
-  color: #7F002D;
+  color: var(--primary-color);
 }
 
 .game__button--start {
@@ -90,7 +94,7 @@ body {
   border-radius: 8px;
   font-family: 'Macondo', cursive;
   font-size: 2rem;
-  background-color: #7F002D;
+  background-color: var(--primary-color);
 }
 
 .game__button--start:hover {
@@ -125,6 +129,48 @@ body {
 
 .rules__item {
   font-size: 1.6rem;
+}
+
+.modal-container {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+  z-index: 1000;
+  background-color: white;
+}
+
+.modal-container p {
+  color: black;
+  text-align: center;
+}
+
+.modal-title {
+  font-size: 3.2rem;
+  margin-bottom: 24px;
+}
+
+.modal-text {
+  font-size: 2.4rem;
+  line-height: 3.6rem;
+}
+
+.modal-button {
+  display: block;
+  margin: 20px auto;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 8px;
+  font-size: 2.4rem;
+  color: white;
+  background-color: var(--primary-color);
+}
+
+.modal-button:hover {
+  cursor: pointer;
 }
 
 .inactive {

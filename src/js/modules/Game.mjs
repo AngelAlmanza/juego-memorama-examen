@@ -1,8 +1,9 @@
 import { CARD_HEIGHT, CARD_WIDTH, PAIRS } from "../../data/CardSets.mjs";
 import Pair from "./Pair.mjs";
+import { Modal } from "./Modal.mjs";
 
 export default class Game {
-  constructor (canvas, cards, clock, movementsToShuffle) {
+  constructor (canvas, cards, clock, movementsToShuffle, difficulty) {
     this.canvas = canvas;
     this.ctx = canvas.getContext('2d');
     this.canvasWidth = canvas.width;
@@ -16,6 +17,8 @@ export default class Game {
     this.clock = clock;
     this.movementsToShuffle = movementsToShuffle;
     this.movements = 0;
+    this.difficulty = difficulty;
+    this.body = document.querySelector('body');
     this.music = document.getElementById('music');
     this.shuffleSound = document.getElementById('shuffleSound');
     this.handleCardClickReference = this.handleCardClick.bind(this);
@@ -176,11 +179,19 @@ export default class Game {
   update () {
     this.repaint();
     this.checkLastPair();
-    if (this.clock.time <= 0 || this.foundPairs.length === 15) {
+    if (this.foundPairs.length === 15) {
       this.removeHandleCardClick();
       this.music.pause();
       this.clock.pause = true;
-      console.log('The game has ended');
+      this.body.appendChild(Modal(this.difficulty, true));
+      return;
+    }
+    if (this.clock.time <= 0) {
+      this.removeHandleCardClick();
+      this.music.pause();
+      this.clock.pause = true;
+      this.body.appendChild(Modal(this.difficulty, false));
+      return;
     }
     window.requestAnimationFrame(this.update.bind(this));
   }
