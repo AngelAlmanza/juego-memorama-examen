@@ -21,6 +21,7 @@ export default class Game {
     this.body = document.querySelector('body');
     this.music = document.getElementById('music');
     this.shuffleSound = document.getElementById('shuffleSound');
+    this.movementsContainer = document.getElementById('movements');
     this.handleCardClickReference = this.handleCardClick.bind(this);
     this.canvas.addEventListener('click', this.handleCardClickReference);
   }
@@ -31,7 +32,7 @@ export default class Game {
         if (card.state === 'DISCOVERED') return;
         card.state = (card.state === 'HIDDEN') ? 'VISIBLE' : 'HIDDEN';
         card.flipCard(this.ctx);
-        // this.movementsCounter();
+        this.movementsCounter();
         this.handleTwoVisibleCards(card);
         return;
       }
@@ -60,20 +61,34 @@ export default class Game {
     }
   }
 
-  // movementsCounter () {
-  //   this.movements++;
-  //   console.log(this.movements);
-  //   if (this.movements > this.movementsToShuffle) {
-  //     this.shuffleCards();
-  //     this.givePositionsCards();
-  //     this.movements = 0;
-  //   }
-  // }
+  prepareToShuffle () {
+    this.cards.forEach(card => {
+      if (card.state === 'VISIBLE') {
+        card.state = 'HIDDEN';
+      }
+    });
+    this.visibleCards = [];
+  }
+
+  movementsCounter () {
+    this.movements++;
+    if (this.movements > this.movementsToShuffle) {
+      this.prepareToShuffle();
+      this.shuffleCards();
+      this.givePositionsCards();
+      this.movements = 0;
+      this.drawDiscoveredCards();
+      this.drawHiddenCards();
+    }
+  }
 
   shuffleCards() {
     this.shuffleSound.play();
     for (let i = this.cards.length - 1; i > 0; i--) {
       let randomIndex = Math.floor(Math.random() * (i + 1));
+      if (this.cards[i].state === 'DISCOVERED' || this.cards[randomIndex].state === 'DISCOVERED' ) {
+        continue;
+      }
       let currentElement = this.cards[i];
       this.cards[i] = this.cards[randomIndex];
       this.cards[randomIndex] = currentElement;
@@ -139,13 +154,17 @@ export default class Game {
     }
   }
 
-  // drawDiscoveredCards () {
-  //   for (const card of this.cards) {
-  //     if (card.state === 'DISCOVERED') {
-  //       card.drawCard(this.ctx);
-  //     }
-  //   }
-  // }
+  drawDiscoveredCards () {
+    for (const card of this.cards) {
+      if (card.state === 'DISCOVERED') {
+        card.drawCard(this.ctx);
+      }
+    }
+  }
+
+  drawMovementsInDocument () {
+    this.movementsContainer.innerText = `Movimientos: ${this.movements}`;
+  }
 
   removeHandleCardClick () {
     this.canvas.removeEventListener('click', this.handleCardClickReference);
@@ -171,9 +190,10 @@ export default class Game {
       this.music.play();
     }
     if (!this.startNewGame) {
-      // this.drawDiscoveredCards();
+      this.drawDiscoveredCards();
       this.drawHiddenCards();
     }
+    this.drawMovementsInDocument();
   }
 
   update () {

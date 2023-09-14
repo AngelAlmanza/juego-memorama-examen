@@ -26,8 +26,15 @@ body {
 }
 
 .game__time {
+  display: block;
   font-size: 2.4rem;
   font-weight: bold;
+}
+
+.game__movements {
+  display: block;
+  font-size: 2rem;
+  font-weight: normal;
 }
 
 .game__settings {
